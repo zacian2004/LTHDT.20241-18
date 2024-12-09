@@ -25,5 +25,4 @@ public class Node {
     public List<Node> getChildren() {
         return children;
     }
-    
 }
