@@ -1,5 +1,4 @@
 package tree;
-
 public class BinaryTree extends GenericTree{
     //constructor
     public BinaryTree(int value){
@@ -7,10 +6,16 @@ public class BinaryTree extends GenericTree{
     }
     
     public void insert(int parent, int value){
-        // TODO Auto-generated constructor stub
-    }
+        Node parentNode = search(getRoot(), parent);
+        if (parentNode == null) {
+            System.out.println("Không tìm thấy nút cha.");
+            return;
+        }
 
-    public void delete(int value){
-        // TODO Auto-generated constructor stub
+        if(parentNode.getChildren().size() < 2) {
+            parentNode.getChildren().add(new Node(value));
+        } else {
+            System.out.println("Cây đã đầy, không thể chèn thêm.");
+        }
     }
 }

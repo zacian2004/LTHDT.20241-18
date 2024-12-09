@@ -1,7 +1,6 @@
 package test;
 
 import tree.GenericTree;
-import tree.Node;
 
 public class generictreetest {
     public static void main(String[] args) {
