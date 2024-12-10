@@ -8,7 +8,7 @@ public class binarytest {
         tree.insert(0, 1);
         tree.insert(0, 2);
         tree.printTree(tree.getRoot(), "", true);
-        tree.insert(0, 3);
+        tree.delete(0);
         tree.printTree(tree.getRoot(), "", true);
     }
 }
