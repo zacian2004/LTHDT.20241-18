@@ -11,9 +11,11 @@ public class generictreetest {
 
         while (true) {
             System.out.println("Chọn thao tác:");
-            System.out.println("1. BFS");
-            System.out.println("2. DFS");
-            System.out.println("3. Thoát");
+            System.out.println("1. Insert");
+            System.out.println("2. Delete");
+            System.out.println("3. Update");
+            System.out.println("4. Search");
+            System.out.println("5. Thoát");
             int choice = input.nextInt();
             input.nextLine(); // Đọc dòng mới
 
