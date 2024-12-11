@@ -1,0 +1,4 @@
+dependencies {
+    implementation 'org.openjfx:javafx-controls:23.0.1'
+    implementation 'org.openjfx:javafx-fxml:23.0.1'
+}
