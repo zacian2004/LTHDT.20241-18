@@ -2,23 +2,29 @@ package tree;
 
 import interfaces.balanceable.Balanceable;
 
-public class BalancedBinaryTree extends BinaryTree implements Balanceable {
-    private int  maxDepthDifference;
-
-    public BalancedBinaryTree(int value) {
-        super(value);
+public class BalancedBinaryTree extends BalancedTree {
+    public BalancedBinaryTree(int rootData, int maxDepthDifference) {
+        super(rootData,maxDepthDifference);
     }
 
-    // Implement methods to maintain balance of the tree
+    // Override phương thức insert để đảm bảo mỗi nút chỉ có tối đa 2 con
     @Override
-    public boolean isBalanced () {
-        // Phương thức kiểm tra cân b��ng cây
-        return true;
-    }
+    public void insert(int parent, int child) {
+        Node parentNode = search(getRoot(), parent);
+        if (parentNode == null) {
+            System.out.println("Không tìm thấy nút cha cần chèn");
+            return;
+        }
 
-    @Override
-    public void balance() {
-        // Phương thức đảo đật và cân b��ng cây
-        // (Nếu cây đang bị lệch)
+        // Kiểm tra nếu nút cha đã có 2 con
+        if (parentNode.getChildren().size() >= 2) {
+            System.out.println("Nút cha đã có đủ 2 con, không thể thêm nữa");
+            return;
+        }
+
+        Node childNode = new Node(child);
+        childNode.setParent(parentNode);
+        parentNode.getChildren().add(childNode);
     }
 }
+
