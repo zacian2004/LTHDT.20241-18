@@ -14,11 +14,11 @@ public abstract class Tree {
 
     public void update(int currentValue, int newValue) {
     }
-
+    public void BFS(Node root){}
+    public void DFS(Node root){}
     // Phương thức in cây theo dạng bảng ngang
     public void printTree(Node node, String prefix, boolean isTail) {
         if (node == null) return;
-
         System.out.println(prefix + (isTail ? "└── " : "├── ") + node.getData());
 
         // In các nút con
@@ -26,4 +26,5 @@ public abstract class Tree {
             printTree(node.getChildren().get(i), prefix + (isTail ? "    " : "│   "), i == node.getChildren().size() - 1);
         }
     }
+
 }
