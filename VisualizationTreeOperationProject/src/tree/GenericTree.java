@@ -1,6 +1,9 @@
 
 package tree;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class GenericTree extends Tree{
     private Node root;
 
@@ -12,7 +15,7 @@ public class GenericTree extends Tree{
     public Node getRoot() {
         return root;
     }
-    
+
     @Override
     public void insert(int parent, int child) {
         Node parentNode = search(root, parent);
@@ -73,6 +76,31 @@ public class GenericTree extends Tree{
             return;
         }
         Node.setData(newV);
+    }
+    @Override
+    public void DFS(Node root) {
+        if(root == null)
+            return;
+        System.out.print(root.getData()+ " ");
+        for(Node child : root.getChildren()) {
+            DFS(child);
+        }
+    }
+
+    @Override
+    public void BFS(Node root) {
+        if (root == null) {
+            return;
+        }
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            System.out.print(current.getData() + " ");
+            queue.addAll(current.getChildren());
+        }
     }
 
 }
