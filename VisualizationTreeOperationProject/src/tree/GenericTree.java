@@ -102,5 +102,46 @@ public class GenericTree extends Tree{
             queue.addAll(current.getChildren());
         }
     }
+    public GenericTree copyTree() {
+        GenericTree newTree = new GenericTree(0);
+        newTree.setRoot(copyNode(this.root));
+        return newTree;
+    }
+
+    private Node copyNode(Node node) {
+        if (node == null) return null;
+
+        Node newNode = new Node(node.getData());
+        for (Node child : node.getChildren()) {
+            newNode.getChildren().add(copyNode(child));
+        }
+        return newNode;
+    }
+
+    public int countNodes() {
+        return countNodesRecursive(root);
+    }
+
+    private int countNodesRecursive(Node node) {
+        if (node == null) return 0;
+        int count = 1; // Count the current node
+        for (Node child : node.getChildren()) {
+            count += countNodesRecursive(child);
+        }
+        return count;
+    }
+
+    public boolean isFound(int value){
+        if(root == null) return false; 
+
+        if(root.getData() == value) return true;
+
+        for(Node child : root.getChildren()) {
+            Node found = search(child, value);
+            if(found!= null) return true;
+        }
+
+        return false;
+    }
 
 }
