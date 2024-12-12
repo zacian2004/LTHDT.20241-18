@@ -2,13 +2,16 @@ package main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
+import java.util.Optional;
 
 public class menu {
 
@@ -60,7 +63,21 @@ public class menu {
     // Phương thức xử lý nút Quit
     @FXML
     public void quitClick(ActionEvent event) {
-        System.out.println("Quitting...");
-        System.exit(0); // Thoát ứng dụng
+        // Tạo hộp thoại xác nhận
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác Nhận Thoát");
+        alert.setHeaderText("Bạn có chắc chắn muốn thoát ứng dụng?");
+        alert.setContentText("Nhấn \"OK\" để thoát, hoặc \"Cancel\" để quay lại.");
+
+        // Hiển thị hộp thoại và chờ phản hồi từ người dùng
+        Optional<ButtonType> result = alert.showAndWait();
+
+        // Kiểm tra nếu người dùng chọn OK
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println("Quitting...");
+            System.exit(0); // Thoát ứng dụng
+        } else {
+            System.out.println("Quitting canceled.");
+        }
     }
 }

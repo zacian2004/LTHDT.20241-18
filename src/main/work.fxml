@@ -15,7 +15,7 @@
                <items>
               <MenuItem fx:id="New" mnemonicParsing="false" onAction="#NewClick" text="New" />
                   <MenuItem fx:id="iniroot" mnemonicParsing="false" onAction="#inirootClick" text="Init Root" />
-                  <MenuItem mnemonicParsing="false" text="Menu" />
+                  <MenuItem fx:id="menuButton" mnemonicParsing="false" onAction="#menuClick" text="Menu" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Quit" />
                </items>
@@ -41,7 +41,7 @@
         </menus>
       </MenuBar>
       <Button layoutX="269.0" layoutY="374.0" mnemonicParsing="false" text="Pause" />
-      <Button layoutX="179.0" layoutY="374.0" mnemonicParsing="false" text="Redo" />
+      <Button fx:id="redoButton" layoutX="179.0" layoutY="374.0" mnemonicParsing="false" text="Redo" />
       <Button layoutX="223.0" layoutY="374.0" mnemonicParsing="false" text="Undo" />
       <Button layoutX="316.0" layoutY="374.0" mnemonicParsing="false" text="Resume" />
    </children>

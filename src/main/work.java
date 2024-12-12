@@ -3,6 +3,7 @@ package main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,19 +19,21 @@ public class work {
     private Parent root;
 
     @FXML
-    private AnchorPane stage1;
-
-    @FXML
     private MenuItem New;
 
     @FXML
     private MenuItem iniroot;
+
+    @FXML 
+    private MenuItem menuButton;
+
+    @FXML
+    private Button redoButton;
     
     @FXML
     public void NewClick(ActionEvent event) throws Exception {
         System.out.println("Work...");
-        // Lấy Stage từ nút startButton khi người dùng nhấn nút
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage = (Stage) redoButton.getScene().getWindow();
 
         // Tải file FXML cho giao diện Data Structure Selection
         root = FXMLLoader.load(getClass().getResource("work.fxml"));
@@ -44,12 +47,22 @@ public class work {
 
     @FXML
     public void inirootClick(ActionEvent event) throws Exception {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("init.fxml"));
-            Parent root = loader.load();
-            stage = new Stage();
-            stage.setTitle("Init Node");
-            stage.setScene(new Scene(root));
-            stage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("init.fxml"));
+        Parent root = loader.load();
+        stage = new Stage();
+        stage.setTitle("Init Node");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    @FXML
+    public void menuClick(ActionEvent event) throws Exception {
+        stage = (Stage) redoButton.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("menu.fxml"));
+        Parent root = loader.load();
+        stage.setTitle("Visualize Tree");
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
 }
