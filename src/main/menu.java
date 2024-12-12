@@ -3,6 +3,7 @@ package main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -16,27 +17,27 @@ public class menu {
     private Parent root;
 
     @FXML
-    private Button startButton, helpButton, endButton; 
+    private Button startButton;
 
-    // Phương thức xử lý sự kiện khi giao diện đã được khởi tạo
     @FXML
-    public void initialize() {
-        // Không khởi tạo Stage ở đây, vì chưa chắc Scene đã được khởi tạo.
-    }
+    private Button helpButton;
+
+    @FXML
+    private Button quitButton;
 
     @FXML
     public void startClick(ActionEvent event) throws IOException {
-        System.out.println("Loading data structure selection...");
+        System.out.println("Work...");
         // Lấy Stage từ nút startButton khi người dùng nhấn nút
-        stage = (Stage) startButton.getScene().getWindow();
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         // Tải file FXML cho giao diện Data Structure Selection
-        root = FXMLLoader.load(getClass().getResource("selecttree.fxml"));
+        root = FXMLLoader.load(getClass().getResource("work.fxml"));
         // Thiết lập giao diện mới
         scene = new Scene(root);
         // Đặt Scene mới vào Stage
         stage.setScene(scene);
-        stage.setTitle("Data Structure Selection");
+        stage.setTitle("Visualize Tree");
         stage.show();
     }
 
@@ -45,8 +46,7 @@ public class menu {
     public void helpClick(ActionEvent event) throws IOException {
         System.out.println("Loading help...");
         // Lấy Stage từ nút helpButton khi người dùng nhấn nút
-        stage = (Stage) helpButton.getScene().getWindow();
-
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         // Tải file FXML cho giao diện help
         root = FXMLLoader.load(getClass().getResource("help.fxml"));
         // Thiết lập giao diện Help
