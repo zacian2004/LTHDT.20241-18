@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
@@ -15,6 +16,9 @@ public class work {
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    @FXML
+    private AnchorPane stage1;
 
     @FXML
     private MenuItem New;
@@ -40,11 +44,10 @@ public class work {
 
     @FXML
     public void inirootClick(ActionEvent event) throws Exception {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("insert.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("init.fxml"));
             Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Insert Node");
+            stage = new Stage();
+            stage.setTitle("Init Node");
             stage.setScene(new Scene(root));
             stage.show();
     }

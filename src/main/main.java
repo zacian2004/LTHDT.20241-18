@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import tree.*;
 
 public class main extends Application {
     @Override
@@ -16,6 +17,7 @@ public class main extends Application {
         stage.setScene(scene1);
         stage.show();
     }
+    
 
     public static void main(String[] args) {
         launch(args);
