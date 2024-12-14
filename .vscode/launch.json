@@ -6,10 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "tesst",
+            "request": "launch",
+            "mainClass": "test.tesst",
+            "projectName": "LTHDT.20241-18_ae727617",
+            "vmArgs": "--module-path \"C:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "main",
+            "request": "launch",
+            "mainClass": "main.main",
+            "projectName": "LTHDT.20241-18_ae727617",
+            "vmArgs": "--module-path \"C:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
             "name": "menu",
             "request": "launch",
             "mainClass": "main.menu",
-            "projectName": "LTHDT.20241-18_cec707e8"
+            "projectName": "LTHDT.20241-18_cec707e8",
+            "vmArgs": "--module-path \"C:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\" --add-modules javafx.controls,javafx.fxml"
         },
         {
             "type": "java",
