@@ -1,243 +1,233 @@
 package tree;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.stage.Stage;
+import javafx.geometry.Pos;
+import javafx.scene.text.Text;
+
+import tree.GenericTree;
+import tree.Node;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.Stack;
 
-public class Visualize extends JFrame {
+public class Visualize implements Initializable{
+    @FXML
+    private Pane treePane;
+    @FXML
+    private TextArea outputArea;
+    @FXML
+    private Button btnInsert, btnDelete, btnUpdate, btnUndo, btnRedo, btnPause, btnResume, btnBack;
+    
     private GenericTree tree;
+    private Stage stage;
     private Stack<GenericTree> undoStack;
     private Stack<GenericTree> redoStack;
-    private JTextArea outputArea;
-    
-    private JPanel treePanel;
-    private JTextArea pseudoCodeArea;
-    private JButton btnUndo, btnRedo, btnPause, btnResume, btnBack, btnInsert, btnDelete, btnUpdate, btnSearch;
 
-    public Visualize() {
-        tree = new GenericTree(1); // Gốc là nút 1
+    public void setTree(GenericTree tree){
+        this.tree = tree;
+    }
+
+    public GenericTree getTree(){
+        return this.tree;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Initialize the GenericTree if it is null
+        if (tree == null) {
+            tree = new GenericTree(0);
+        }
+        
+        // Clear and set default text in the output area
+        outputArea.clear();
+        outputArea.appendText("Chương trình đã sẵn sàng.\n");
+        
+        // Ensure undo and redo stacks are empty
         undoStack = new Stack<>();
         redoStack = new Stack<>();
-        setTitle("Tree Visualization");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        
+        // Set up the tree pane
+        treePane.getChildren().clear();  // Clear any preloaded elements in the Pane
+        
+        // If there is an existing tree, visualize it
+        if (tree.getRoot() != null) {
+            checkAndRepaint();
+        }
+        
+        // Add other UI initializations if necessary
+        btnInsert.setOnAction(this::handleInsert);
+        btnDelete.setOnAction(this::handleDelete);
+        btnUpdate.setOnAction(this::handleUpdate);
+        btnUndo.setOnAction(this::handleUndo);
+        btnRedo.setOnAction(this::handleRedo);
+        btnPause.setOnAction(this::handlePause);
+        btnResume.setOnAction(this::handleResume);
+        btnBack.setOnAction(this::handleBackToMainMenu);
+        
+        // Log completion of initialization
+        outputArea.appendText("Giao diện đã được khởi tạo.\n");
+    }
 
-        // Panel để hiển thị cây
-        treePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (tree != null && tree.getRoot() != null) {
-                    int width = getWidth();
-                    visualizeTree(g, tree.getRoot(), width / 2, 50, width / 4, 75);
+    @FXML
+    private void handleInsert(ActionEvent event) {
+        TextInputDialog parentDialog = new TextInputDialog();
+        parentDialog.setTitle("Insert Node");
+        parentDialog.setHeaderText("Nhập giá trị nút cha:");
+        parentDialog.setContentText("Parent:");
+        parentDialog.showAndWait().ifPresent(parentStr -> {
+            TextInputDialog childDialog = new TextInputDialog();
+            childDialog.setTitle("Insert Node");
+            childDialog.setHeaderText("Nhập giá trị nút con:");
+            childDialog.setContentText("Child:");
+            childDialog.showAndWait().ifPresent(childStr -> {
+                try {
+                    int parent = Integer.parseInt(parentStr);
+                    int child = Integer.parseInt(childStr);
+                    saveStateForUndo();
+                    tree.insert(parent, child);
+                    outputArea.appendText("Đã thêm nút " + child + " vào nút cha " + parent + "\n");
+                    checkAndRepaint();
+                } catch (NumberFormatException ex) {
+                    outputArea.appendText("Lỗi: Giá trị nhập vào không hợp lệ.\n");
                 }
+            });
+        });
+    }
+
+    @FXML
+    private void handleDelete(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Delete Node");
+        dialog.setHeaderText("Nhập giá trị nút cần xóa:");
+        dialog.setContentText("Value:");
+        dialog.showAndWait().ifPresent(deleteStr -> {
+            try {
+                int value = Integer.parseInt(deleteStr);
+                saveStateForUndo();
+                tree.delete(value);
+                outputArea.appendText("Đã xóa nút " + value + "\n");
+                checkAndRepaint();
+            } catch (NumberFormatException ex) {
+                outputArea.appendText("Lỗi: Giá trị nhập vào không hợp lệ.\n");
             }
-        };
-        treePanel.setBackground(Color.WHITE);
-        treePanel.setPreferredSize(new Dimension(600, 400));
-        add(treePanel, BorderLayout.CENTER);
-
-        /*  Khu vực hiển thị mã giả
-        pseudoCodeArea = new JTextArea(10, 30);
-        pseudoCodeArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(pseudoCodeArea);
-        add(scrollPane, BorderLayout.EAST);*/
-
-        // Khu vực hiển thị kết quả
-        outputArea = new JTextArea(5, 30);
-        outputArea.setEditable(false);
-        JScrollPane outputScrollPane = new JScrollPane(outputArea);
-        add(outputScrollPane, BorderLayout.SOUTH);
-
-        // Panel chứa các nút chức năng
-        JPanel buttonPanel = new JPanel();
-        btnInsert = new JButton("Insert");
-        btnDelete = new JButton("Delete");
-        btnUpdate = new JButton("Update");
-        btnSearch = new JButton("Search");
-        btnUndo = new JButton("Undo");
-        btnRedo = new JButton("Redo");
-        btnPause = new JButton("Pause");
-        btnResume = new JButton("Resume");
-        btnBack = new JButton("Back to Main Menu");
-
-        buttonPanel.add(btnInsert);
-        buttonPanel.add(btnDelete);
-        buttonPanel.add(btnUpdate);
-        buttonPanel.add(btnSearch);
-        buttonPanel.add(btnUndo);
-        buttonPanel.add(btnRedo);
-        buttonPanel.add(btnPause);
-        buttonPanel.add(btnResume);
-        buttonPanel.add(btnBack);
-
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        // Gắn sự kiện cho các nút
-        addActionListeners();
+        });
     }
 
-    private void addActionListeners() {
-        btnInsert.addActionListener(e -> handleInsert());
-        btnDelete.addActionListener(e -> handleDelete());
-        btnUpdate.addActionListener(e -> handleUpdate());
-        btnSearch.addActionListener(e -> handleSearch());
-        btnUndo.addActionListener(e -> undo());
-        btnRedo.addActionListener(e -> redo());
-        btnPause.addActionListener(e -> pause());
-        btnResume.addActionListener(e -> resume());
-        btnBack.addActionListener(e -> backToMainMenu());
+    @FXML
+    private void handleUpdate(ActionEvent event) {
+        TextInputDialog currentDialog = new TextInputDialog();
+        currentDialog.setTitle("Update Node");
+        currentDialog.setHeaderText("Nhập giá trị nút hiện tại:");
+        currentDialog.setContentText("Current Value:");
+        currentDialog.showAndWait().ifPresent(currentStr -> {
+            TextInputDialog newDialog = new TextInputDialog();
+            newDialog.setTitle("Update Node");
+            newDialog.setHeaderText("Nhập giá trị mới:");
+            newDialog.setContentText("New Value:");
+            newDialog.showAndWait().ifPresent(newStr -> {
+                try {
+                    int current = Integer.parseInt(currentStr);
+                    int newValue = Integer.parseInt(newStr);
+                    saveStateForUndo();
+                    tree.update(current, newValue);
+                    outputArea.appendText("Đã cập nhật nút " + current + " thành " + newValue + "\n");
+                    checkAndRepaint();
+                } catch (NumberFormatException ex) {
+                    outputArea.appendText("Lỗi: Giá trị nhập vào không hợp lệ.\n");
+                }
+            });
+        });
     }
 
-    private void handleInsert() {
-        String parentStr = JOptionPane.showInputDialog(this, "Nhập giá trị nút cha:");
-        String childStr = JOptionPane.showInputDialog(this, "Nhập giá trị nút con:");
-        try {
-            int parent = Integer.parseInt(parentStr);
-            int child = Integer.parseInt(childStr);
-            saveStateForUndo();
-            tree.insert(parent, child);
-            outputArea.append("Đã thêm nút " + child + " vào nút cha " + parent + "\n");
-            checkAndRepaint();
-        } catch (NumberFormatException e) {
-            outputArea.append("Lỗi: Giá trị nhập vào không hợp lệ.\n");
-        }
-    }
-
-    private void handleDelete() {
-        String deleteStr = JOptionPane.showInputDialog(this, "Nhập giá trị nút cần xóa:");
-        try {
-            int value = Integer.parseInt(deleteStr);
-            saveStateForUndo();
-            tree.delete(value);
-            outputArea.append("Đã xóa nút " + value + "\n");
-            checkAndRepaint();
-        } catch (NumberFormatException e) {
-            outputArea.append("Lỗi: Giá trị nhập vào không hợp lệ.\n");
-        }
-    }
-
-    private void handleUpdate() {
-        String currentStr = JOptionPane.showInputDialog(this, "Nhập giá trị nút hiện tại:");
-        String newStr = JOptionPane.showInputDialog(this, "Nhập giá trị mới:");
-        try {
-            int current = Integer.parseInt(currentStr);
-            int newValue = Integer.parseInt(newStr);
-            saveStateForUndo();
-            tree.update(current, newValue);
-            outputArea.append("Đã cập nhật nút " + current + " thành " + newValue + "\n");
-            checkAndRepaint();
-        } catch (NumberFormatException e) {
-            outputArea.append("Lỗi: Giá trị nhập vào không hợp lệ.\n");
-        }
-    }
-
-    public void handleSearch(){
-        String searchStr = JOptionPane.showInputDialog(this, "Nhập giá trị nút cần tìm:");
-        try {
-            int value = Integer.parseInt(searchStr);
-            boolean found = tree.isFound(value);
-            if (!found) {
-                JOptionPane.showMessageDialog(this, "Nút " + value + " không tồn tại trong cây.\n");
-            } else {
-                JOptionPane.showMessageDialog(this, "Nút " + value + " được tìm thấy trong cây.\n");
-            }
-        } catch (NumberFormatException e) {
-            outputArea.append("Lỗi: Giá trị nhập vào không hợp lệ.\n");
-        }
-    }
-
-    // Các phương thức chức năng
-    public void visualizeTree(Graphics g, Node node, int x, int y, int xOffset, int yOffset) {
+    private void visualizeTree(Node node, double x, double y, double xOffset, double yOffset) {
         if (node == null) return;
-        // Vẽ nút
-        g.setColor(Color.BLACK);
-        g.fillOval(x - 15, y - 15, 30, 30);
-        g.setColor(Color.WHITE);
-        g.drawString(String.valueOf(node.getData()), x - 5, y + 5);
-        int childX = x - xOffset;
+
+        Circle circle = new Circle(x, y, 15, Color.BLACK);
+        Text text = new Text(String.valueOf(node.getData()));
+        text.setFill(Color.WHITE);
+        text.setX(x - 5);
+        text.setY(y + 5);
+
+        treePane.getChildren().addAll(circle, text);
+
+        double childX = x - xOffset;
         for (Node child : node.getChildren()) {
-            // Vẽ đường kết nối
-            g.setColor(Color.BLACK);
-            g.drawLine(x, y, childX, y + yOffset);
-
-            // Gọi đệ quy để vẽ các nút con
-            visualizeTree(g, child, childX, y + yOffset, xOffset / 2, yOffset);
-
-            // Dịch chuyển sang phải cho nút con tiếp theo
+            Line line = new Line(x, y, childX, y + yOffset);
+            treePane.getChildren().add(line);
+            visualizeTree(child, childX, y + yOffset, xOffset / 2, yOffset);
             childX += xOffset * 2;
         }
     }
 
-    public void updatePseudoCode(String pseudoCode) {
-        pseudoCodeArea.setText(pseudoCode);
-    }
-
-    public void performOperation() {
-        // Thực hiện các thao tác trên cây
-    }
-
-    //Lưu trạng thái cây hiện tại vào undoStack
     private void saveStateForUndo() {
         undoStack.push(tree.copyTree());
-        redoStack.clear(); // Xóa redoStack sau khi thực hiện thao tác mới
+        redoStack.clear();
     }
-    
-    public void undo() {
+
+    @FXML
+    public void handleUndo(ActionEvent event) {
         if (!undoStack.isEmpty()) {
-            redoStack.push(tree.copyTree()); // Lưu trạng thái hiện tại vào redoStack
-            tree = undoStack.pop(); // Lấy trạng thái trước đó từ undoStack
-            repaint();
+            redoStack.push(tree.copyTree());
+            tree = undoStack.pop();
+            checkAndRepaint();
         } else {
-            JOptionPane.showMessageDialog(this, "Không thể undo thêm nữa.");
+            showAlert("Undo", "Không thể undo thêm nữa.");
         }
     }
 
-    public void redo() {
+    @FXML
+    public void handleRedo(ActionEvent event) {
         if (!redoStack.isEmpty()) {
-            undoStack.push(tree.copyTree()); // Lưu trạng thái hiện tại vào undoStack
-            tree = redoStack.pop(); // Lấy trạng thái trước đó từ redoStack
-            repaint();
+            undoStack.push(tree.copyTree());
+            tree = redoStack.pop();
+            checkAndRepaint();
         } else {
-            JOptionPane.showMessageDialog(this, "Không thể redo thêm nữa.");
+            showAlert("Redo", "Không thể redo thêm nữa.");
         }
     }
 
-    public void pause() {
-        JOptionPane.showMessageDialog(this, "Paused.");
+    @FXML
+    public void handlePause(ActionEvent event) {
+        showAlert("Pause", "Paused.");
     }
 
-    public void resume() {
-        JOptionPane.showMessageDialog(this, "Resumed.");
+    @FXML
+    public void handleResume(ActionEvent event) {
+        showAlert("Resume", "Resumed.");
     }
 
-    public void backToMainMenu() {
-        JOptionPane.showMessageDialog(this, "Returning to Main Menu.");
-        dispose(); // Đóng cửa sổ hiện tại
+    @FXML
+    public void handleBackToMainMenu(ActionEvent event) {
+        showAlert("Main Menu", "Returning to Main Menu.");
+        Stage stage = (Stage) treePane.getScene().getWindow();
+        stage.close();
     }
 
     private void checkAndRepaint() {
-        int nodeCount = tree.countNodes();
-        int optimalWidth = Math.max(800, nodeCount * 50); // Đảm bảo chiều rộng tối thiểu
-        int optimalHeight = Math.max(600, nodeCount * 30); // Đảm bảo chiều cao tối thiểu
-
-        // Nếu kích thước hiện tại không đủ, mở rộng kích thước
-        if (optimalWidth > treePanel.getPreferredSize().width || optimalHeight > treePanel.getPreferredSize().height) {
-            treePanel.setPreferredSize(new Dimension(optimalWidth, optimalHeight));
-            treePanel.revalidate();
-            outputArea.append("Cập nhật kích thước cây: " + optimalWidth + "x" + optimalHeight + "\n");
+        treePane.getChildren().clear();
+        if (tree != null && tree.getRoot() != null) {
+            visualizeTree(tree.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
         }
-
-        repaint();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Visualize visualize = new Visualize();
-            visualize.setVisible(true);
-        });
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
