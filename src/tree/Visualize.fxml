@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="tree.Visualize">
+    <center>
+        <Pane fx:id="treePane" prefHeight="400" prefWidth="600" style="-fx-background-color: white;">
+         <children>
+            <ScrollBar layoutX="7.0" layoutY="350.0" prefHeight="16.0" prefWidth="571.0" />
+            <ScrollBar layoutX="578.0" orientation="VERTICAL" prefHeight="347.0" prefWidth="16.0" />
+              <HBox alignment="CENTER" layoutX="7.0" layoutY="366.0" spacing="10">
+                  <Button fx:id="btnInsert" text="Insert" />
+                  <Button fx:id="btnDelete" text="Delete" />
+                  <Button fx:id="btnUpdate" text="Update" />
+                  <Button fx:id="btnUndo" text="Undo" />
+                  <Button fx:id="btnRedo" text="Redo" />
+                  <Button fx:id="btnPause" text="Pause" />
+                  <Button fx:id="btnResume" text="Resume" />
+                  <Button fx:id="btnBack" text="Back to Main Menu" />
+              </HBox>
+         </children></Pane>
+    </center>
+    <bottom>
+        <TextArea fx:id="outputArea" editable="false" prefHeight="100" />
+    </bottom>
+</BorderPane>
