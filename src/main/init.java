@@ -59,10 +59,17 @@ public class init implements Initializable{
             System.out.println("Max Depth Difference: " + depthDiff);
             System.out.println("Root Value: " + rootVal);
 
-            Stage stage = (Stage) Create.getScene().getWindow();
-            stage.close();
-
             // Thêm logic để xử lý tạo cây tại đây
+            if (selectedTreeType.equals("Generic Tree")) {
+                stage = (Stage) Create.getScene().getWindow();
+                stage.close();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Visualize.fxml"));
+                root = loader.load();
+                stage = new Stage();
+                stage.setTitle("Generic Tree");
+                stage.setScene(new Scene(root));
+                stage.show();
+            }
         } catch (NumberFormatException e) {
             System.out.println("Vui lòng nhập giá trị hợp lệ cho các trường số!");
         } catch (Exception e) {
