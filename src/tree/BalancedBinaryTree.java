@@ -1,7 +1,5 @@
 package tree;
 
-import interfaces.balanceable.Balanceable;
-
 public class BalancedBinaryTree extends BalancedTree {
     public BalancedBinaryTree(int rootData, int maxDepthDifference) {
         super(rootData,maxDepthDifference);

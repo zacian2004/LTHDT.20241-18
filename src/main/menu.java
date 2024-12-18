@@ -8,13 +8,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import tree.*;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 import java.util.Optional;
 
 public class menu {
-
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -80,4 +80,6 @@ public class menu {
             System.out.println("Quitting canceled.");
         }
     }
+
+
 }

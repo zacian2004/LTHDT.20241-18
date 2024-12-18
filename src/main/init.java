@@ -10,8 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import tree.BalancedBinaryTree;
+import tree.BalancedTree;
+import tree.BinaryTree;
+import tree.GenericTree;
 
 public class init implements Initializable{
+    private Stage stage;
 
     @FXML
     private ChoiceBox<String> TreeType;
@@ -30,7 +35,7 @@ public class init implements Initializable{
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
             TreeType.getItems().addAll(choices);
-            TreeType.setValue("Gereric Tree");
+            TreeType.setValue("Generic Tree");
     }
 
     // Xử lý sự kiện khi nhấn nút "Create"
@@ -38,42 +43,54 @@ public class init implements Initializable{
     public void handleCreate(ActionEvent event) {
         try {
             // Lấy giá trị từ các trường nhập liệu
-            String selectedTreeType = TreeType.getValue(); // Lấy kiểu cây được chọn
-            int rootVal = Integer.parseInt(rootValue.getText()); // Chuyển đổi chuỗi thành số
+            String selectedTreeType = TreeType.getValue();
+            int rootVal = Integer.parseInt(rootValue.getText());
 
-             // Kiểm tra điều kiện đầu vào
+            // Kiểm tra điều kiện đầu vào
             if (selectedTreeType == null || rootValue.getText().isEmpty()) {
                 System.out.println("Vui lòng nhập đầy đủ thông tin cơ bản (Tree Type và Root Value)!");
                 return;
             }
 
-            int depthDiff = Integer.parseInt(maxDepthDiff.getText()); // Chuyển đổi chuỗi thành số
-            // Nếu loại cây là Balanced Tree hoặc Binary Balanced Tree thì kiểm tra thêm depthDiff
-            if ((selectedTreeType.equals("Balanced Tree") || selectedTreeType.equals("Binary Balanced Tree")) 
-                    && (maxDepthDiff.getText().isEmpty())) {
+            int depthDiff = 0; // Default cho các loại cây không cần
+            if ((selectedTreeType.equals("Balanced Tree") || selectedTreeType.equals("Binary Balanced Tree"))
+                    && maxDepthDiff.getText().isEmpty()) {
                 System.out.println("Vui lòng nhập giá trị Max Depth Difference cho loại cây Balanced!");
                 return;
+            } else if (!maxDepthDiff.getText().isEmpty()) {
+                depthDiff = Integer.parseInt(maxDepthDiff.getText());
             }
-            // In ra giá trị để kiểm tra
-            System.out.println("Tree Type: " + selectedTreeType);
-            System.out.println("Max Depth Difference: " + depthDiff);
-            System.out.println("Root Value: " + rootVal);
 
-            // Thêm logic để xử lý tạo cây tại đây
+            // Lưu thông tin vào class work
             if (selectedTreeType.equals("Generic Tree")) {
-                stage = (Stage) Create.getScene().getWindow();
-                stage.close();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("Visualize.fxml"));
-                root = loader.load();
-                stage = new Stage();
-                stage.setTitle("Generic Tree");
-                stage.setScene(new Scene(root));
-                stage.show();
+                work.typeTree = 0;
+                work.GenericT = new GenericTree(rootVal); // Tạo GenericTree
+                System.out.println("Generic Tree created with root: " + rootVal);
+            } else if (selectedTreeType.equals("Balanced Tree")) {
+                work.typeTree = 2;
+                work.BalanceT = new BalancedTree(rootVal, depthDiff);
+                work.maxDepthDiff = depthDiff; // Lưu độ sâu khác biệt
+                System.out.println("Balanced Tree created with root: " + rootVal + ", Max Depth Diff: " + depthDiff);
+            } else if (selectedTreeType.equals("Binary Balanced Tree")) {
+                work.typeTree = 3;
+                work.BBT = new BalancedBinaryTree(rootVal, depthDiff);
+                work.maxDepthDiff = depthDiff;
+                System.out.println("Binary Balanced Tree created with root: " + rootVal + ", Max Depth Diff: " + depthDiff);
+            } else if (selectedTreeType.equals("Binary Tree")) {
+                work.typeTree = 1;
+                work.BinaryT = new BinaryTree(rootVal);
+                System.out.println("Binary Tree created with root: " + rootVal);
             }
+
+            // Đóng màn hình hiện tại và mở Visualize
+            stage = (Stage) Create.getScene().getWindow();
+            stage.close();
+
         } catch (NumberFormatException e) {
             System.out.println("Vui lòng nhập giá trị hợp lệ cho các trường số!");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

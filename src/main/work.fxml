@@ -5,11 +5,14 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.work">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="704.0" prefWidth="994.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.work">
    <children>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="994.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
                <items>
@@ -22,7 +25,7 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Operation">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Insert" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleInsert" text="Insert" />
                   <MenuItem mnemonicParsing="false" text="Search" />
                   <MenuItem mnemonicParsing="false" text="Update" />
                   <Menu mnemonicParsing="false" text="Traverse">
@@ -40,9 +43,15 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Button layoutX="269.0" layoutY="374.0" mnemonicParsing="false" text="Pause" />
-      <Button fx:id="redoButton" layoutX="179.0" layoutY="374.0" mnemonicParsing="false" text="Redo" />
-      <Button layoutX="223.0" layoutY="374.0" mnemonicParsing="false" text="Undo" />
-      <Button layoutX="316.0" layoutY="374.0" mnemonicParsing="false" text="Resume" />
+      <Button layoutX="497.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Pause" />
+      <Button fx:id="redoButton" layoutX="381.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Redo" />
+      <Button layoutX="439.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Undo" />
+      <Button layoutX="555.0" layoutY="678.0" mnemonicParsing="false" text="Resume" />
+      <Button layoutY="678.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="58.0" text="Play" />
+      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="650.0" prefWidth="879.0">
+         <children>
+            <TextArea fx:id="outputArea" layoutX="578.0" layoutY="567.0" prefHeight="115.0" prefWidth="314.0" />
+         </children></Pane>
+      <Slider fx:id="zoomSlider" layoutX="111.0" layoutY="682.0" prefHeight="14.0" prefWidth="197.0" />
    </children>
 </AnchorPane>

@@ -1,4 +1,4 @@
-package tree;
+package main;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -33,6 +33,7 @@ public class Visualize implements Initializable{
     
     private GenericTree tree;
     private Stage stage;
+    
     private Stack<GenericTree> undoStack;
     private Stack<GenericTree> redoStack;
 
