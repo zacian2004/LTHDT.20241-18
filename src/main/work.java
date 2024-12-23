@@ -1,6 +1,7 @@
 package main;
 
 import java.util.Optional;
+import java.util.Stack;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +30,8 @@ public class work {
     public static GenericTree GenericT;
     public static BinaryTree BinaryT;
     public static int maxDepthDiff;
+    private Stack<GenericTree> undoStack;
+    private Stack<GenericTree> redoStack;
  
     private Stage stage;
     private Scene scene;
@@ -51,25 +54,31 @@ public class work {
     private Button redoButton;
 
     @FXML
+    private Button undButton;
+
+    @FXML
     private Pane treePane;
 
     @FXML
-public void initialize() {
-    // Áp dụng scale cho treePane
-    treePane.getTransforms().add(scale);
+    public void initialize() {
+        undoStack = new Stack<>();
+        redoStack = new Stack<>();
 
-    // Thiết lập sự kiện khi slider thay đổi
-    zoomSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-        // Nhân với một hệ số nhỏ hơn để làm chậm quá trình thu phóng
-        double zoomFactor = newValue.doubleValue() * 0.01; // 0.1 là hệ số làm chậm (có thể điều chỉnh theo nhu cầu)
+        // Áp dụng scale cho treePane
+        treePane.getTransforms().add(scale);
 
-        // Đảm bảo zoom không bị quá nhỏ (tránh giá trị âm hoặc quá nhỏ)
-        zoomFactor = Math.max(0.01, zoomFactor); // Đảm bảo zoomFactor luôn >= 0.1
+        // Thiết lập sự kiện khi slider thay đổi
+        zoomSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Nhân với một hệ số nhỏ hơn để làm chậm quá trình thu phóng
+            double zoomFactor = newValue.doubleValue() * 0.01; // 0.1 là hệ số làm chậm (có thể điều chỉnh theo nhu cầu)
 
-        scale.setX(zoomFactor); // Điều chỉnh tỷ lệ theo chiều ngang
-        scale.setY(zoomFactor); // Điều chỉnh tỷ lệ theo chiều dọc
-    });
-}
+            // Đảm bảo zoom không bị quá nhỏ (tránh giá trị âm hoặc quá nhỏ)
+            zoomFactor = Math.max(0.01, zoomFactor); // Đảm bảo zoomFactor luôn >= 0.1
+
+            scale.setX(zoomFactor); // Điều chỉnh tỷ lệ theo chiều ngang
+            scale.setY(zoomFactor); // Điều chỉnh tỷ lệ theo chiều dọc
+        });
+    }
     
     @FXML
     public void NewClick(ActionEvent event) throws Exception {
@@ -120,6 +129,7 @@ public void initialize() {
     }
 
     private void visualizeTree(tree.Node node, double x, double y, double xOffset, double yOffset) {
+        
         if (node == null) return;
     
         // Vẽ nút hiện tại (hình tròn + giá trị)
@@ -177,18 +187,22 @@ public void initialize() {
             int childVal = Integer.parseInt(childResult.get());
 
             if(typeTree == 0){
+                saveStateForUndo();
                 treePane.getChildren().clear();
                 GenericT.insert(parentVal, childVal);
                 visualizeTree(GenericT.getRoot(), 400, 50, 200, 100);
             } else if(typeTree == 1){
+                saveStateForUndo();
                 treePane.getChildren().clear();
                 BinaryT.insert(parentVal, childVal);
                 visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100);
             } else if(typeTree == 2){
+                saveStateForUndo();
                 treePane.getChildren().clear();
                 BalanceT.insert(parentVal, childVal);
                 visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100);
             } else if(typeTree == 3){
+                saveStateForUndo();
                 treePane.getChildren().clear();
                 BBT.insert(parentVal, childVal);
                 visualizeTree(BBT.getRoot(), 400, 50, 200, 100);
@@ -201,5 +215,37 @@ public void initialize() {
         }
     }
 
-    
+    private void saveStateForUndo() {
+        undoStack.push(GenericT.copyTree());
+        redoStack.clear();
+    }
+
+    @FXML
+    public void handleUndo() {
+        if (!undoStack.isEmpty()) {
+            redoStack.push(GenericT.copyTree());
+            GenericT = undoStack.pop();
+            checkAndRepaint();
+        } else {
+            System.out.println( "Không thể undo thêm nữa.");
+        }
+    }
+
+    @FXML
+    public void handleRedo() {
+        if (!redoStack.isEmpty()) {
+            undoStack.push(GenericT.copyTree());
+            GenericT = redoStack.pop();
+            checkAndRepaint();
+        } else {
+            System.out.println( "Không thể redo thêm nữa.");
+        }
+    }
+
+    private void checkAndRepaint() {
+        treePane.getChildren().clear();
+        if (GenericT != null && GenericT.getRoot() != null) {
+            visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        }
+    }
 }
