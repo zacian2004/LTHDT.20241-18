@@ -18,4 +18,10 @@ public class BinaryTree extends GenericTree{
             System.out.println("Node cha đã đầy, không thể chèn thêm.");
         }
     }
+
+    public BinaryTree copyTree() {
+        BinaryTree newTree = new BinaryTree(0);
+        newTree.setRoot(copyNode(this.root));
+        return newTree;
+    }
 }
