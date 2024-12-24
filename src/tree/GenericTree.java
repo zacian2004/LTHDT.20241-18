@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class GenericTree extends Tree{
-    private Node root;
+    protected Node root;
 
     public GenericTree(int rootData) {
         this.root = new Node(rootData);
@@ -112,7 +112,7 @@ public class GenericTree extends Tree{
         return newTree;
     }
 
-    private Node copyNode(Node node) {
+    protected Node copyNode(Node node) {
         if (node == null) return null;
 
         Node newNode = new Node(node.getData());
