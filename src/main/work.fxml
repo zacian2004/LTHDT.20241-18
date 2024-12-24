@@ -6,7 +6,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
@@ -27,7 +26,8 @@
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleInsert" text="Insert" />
                   <MenuItem mnemonicParsing="false" text="Search" />
-                  <MenuItem mnemonicParsing="false" text="Update" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleUpdate" text="Update" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
                   <Menu mnemonicParsing="false" text="Traverse">
                     <items>
                       <MenuItem mnemonicParsing="false" text="BFS" />
@@ -44,14 +44,11 @@
         </menus>
       </MenuBar>
       <Button layoutX="497.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Pause" />
-      <Button fx:id="redoButton" layoutX="381.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Redo" />
-      <Button layoutX="439.0" layoutY="678.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Undo" />
+      <Button fx:id="redoButton" layoutX="381.0" layoutY="678.0" mnemonicParsing="false" onAction="#handleRedo" prefHeight="25.0" prefWidth="58.0" text="Redo" />
+      <Button fx:id="undButton" layoutX="439.0" layoutY="678.0" mnemonicParsing="false" onAction="#handleUndo" prefHeight="25.0" prefWidth="58.0" text="Undo" />
       <Button layoutX="555.0" layoutY="678.0" mnemonicParsing="false" text="Resume" />
       <Button layoutY="678.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="58.0" text="Play" />
-      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="650.0" prefWidth="879.0">
-         <children>
-            <TextArea fx:id="outputArea" layoutX="578.0" layoutY="567.0" prefHeight="115.0" prefWidth="314.0" />
-         </children></Pane>
+      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="650.0" prefWidth="879.0" />
       <Slider fx:id="zoomSlider" layoutX="111.0" layoutY="682.0" prefHeight="14.0" prefWidth="197.0" />
    </children>
 </AnchorPane>
