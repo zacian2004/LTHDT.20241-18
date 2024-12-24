@@ -87,4 +87,10 @@ public class BalancedTree extends GenericTree implements Balanceable {
         return null;
     }
 
+    public BalancedTree copyTree() {
+        BalancedTree newTree = new BalancedTree(0, 0);
+        newTree.setRoot(copyNode(this.root));
+        return newTree;
+    }
+
 }
