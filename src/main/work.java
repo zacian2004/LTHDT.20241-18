@@ -30,8 +30,17 @@ public class work {
     public static GenericTree GenericT;
     public static BinaryTree BinaryT;
     public static int maxDepthDiff;
-    private Stack<GenericTree> undoStack;
-    private Stack<GenericTree> redoStack;
+    private Stack<GenericTree> undoStackGT;
+    private Stack<GenericTree> redoStackGT;
+
+    private Stack<BinaryTree> undoStackBiT;
+    private Stack<BinaryTree> redoStackBiT;
+    
+    private Stack<BalancedTree> undoStackBaT;
+    private Stack<BalancedTree> redoStackBaT;
+
+    private Stack<BalancedBinaryTree> undoStackBBT;
+    private Stack<BalancedBinaryTree> redoStackBBT;
  
     private Stage stage;
     private Scene scene;
@@ -61,8 +70,14 @@ public class work {
 
     @FXML
     public void initialize() {
-        undoStack = new Stack<>();
-        redoStack = new Stack<>();
+        undoStackGT = new Stack<>();
+        redoStackGT = new Stack<>();
+        undoStackBiT = new Stack<>();
+        redoStackBiT = new Stack<>();
+        undoStackBaT = new Stack<>();
+        redoStackBaT = new Stack<>();
+        undoStackBBT = new Stack<>();
+        redoStackBBT = new Stack<>();
 
         // Áp dụng scale cho treePane
         treePane.getTransforms().add(scale);
@@ -82,6 +97,7 @@ public class work {
     
     @FXML
     public void NewClick(ActionEvent event) throws Exception {
+
         System.out.println("Work...");
         stage = (Stage) redoButton.getScene().getWindow();
 
@@ -186,26 +202,28 @@ public class work {
             int parentVal = Integer.parseInt(parentResult.get());
             int childVal = Integer.parseInt(childResult.get());
 
-            if(typeTree == 0){
+            if(typeTree == 0 && !GenericT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 GenericT.insert(parentVal, childVal);
                 visualizeTree(GenericT.getRoot(), 400, 50, 200, 100);
-            } else if(typeTree == 1){
+            } else if(typeTree == 1 && !BinaryT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BinaryT.insert(parentVal, childVal);
                 visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100);
-            } else if(typeTree == 2){
+            } else if(typeTree == 2 && !BalanceT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BalanceT.insert(parentVal, childVal);
                 visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100);
-            } else if(typeTree == 3){
+            } else if(typeTree == 3 && !BBT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BBT.insert(parentVal, childVal);
                 visualizeTree(BBT.getRoot(), 400, 50, 200, 100);
+            } else {
+                System.out.println("Nut " + childVal + " da ton tai!\n");
             }
 
         } catch (NumberFormatException e) {
@@ -215,37 +233,193 @@ public class work {
         }
     }
 
+    @FXML
+    private void handleDelete() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Delete Node");
+        dialog.setHeaderText("Nhập giá trị nút cần xóa:");
+        dialog.setContentText("Value:");
+        dialog.showAndWait().ifPresent(deleteStr -> {
+            try {
+                int value = Integer.parseInt(deleteStr);
+
+                if(typeTree == 0){
+                    saveStateForUndo();
+                    GenericT.delete(value);
+                    checkAndRepaint();
+                } else if(typeTree == 1){
+                    saveStateForUndo();
+                    BinaryT.delete(value);
+                    checkAndRepaint();
+                } else if(typeTree == 2){
+                    saveStateForUndo();
+                    BalanceT.delete(value);
+                    checkAndRepaint();
+                } else if(typeTree == 3){
+                    saveStateForUndo();
+                    BBT.delete(value);
+                    checkAndRepaint();
+                }
+            } catch (NumberFormatException ex) {
+                System.out.println("Lỗi: Giá trị nhập vào không hợp lệ.\n");
+            }
+        });
+    }
+
+    @FXML
+    private void handleUpdate() {
+        TextInputDialog currentDialog = new TextInputDialog();
+        currentDialog.setTitle("Update Node");
+        currentDialog.setHeaderText("Nhập giá trị nút hiện tại:");
+        currentDialog.setContentText("Current Value:");
+        currentDialog.showAndWait().ifPresent(currentStr -> {
+            TextInputDialog newDialog = new TextInputDialog();
+            newDialog.setTitle("Update Node");
+            newDialog.setHeaderText("Nhập giá trị mới:");
+            newDialog.setContentText("New Value:");
+            newDialog.showAndWait().ifPresent(newStr -> {
+                try {
+                    int current = Integer.parseInt(currentStr);
+                    int newValue = Integer.parseInt(newStr);
+
+                    if(typeTree == 0 && !GenericT.isFound(newValue)){
+                        saveStateForUndo();
+                        GenericT.update(current, newValue);
+                        System.out.println("Đã cập nhật nút " + current + " thành " + newValue + "\n");
+                        checkAndRepaint();
+                    } else if(typeTree == 1 && !BinaryT.isFound(newValue)){
+                        saveStateForUndo();
+                        BinaryT.update(current, newValue);
+                        System.out.println("Đã cập nhật nút " + current + " thành " + newValue + "\n");
+                        checkAndRepaint();
+                    } else if(typeTree == 2 && !BalanceT.isFound(newValue)){
+                        saveStateForUndo();
+                        BalanceT.update(current, newValue);
+                        System.out.println("Đã cập nhật nút " + current + " thành " + newValue + "\n");
+                        checkAndRepaint();
+                    } else if(typeTree == 3 && !BBT.isFound(newValue)){
+                        saveStateForUndo();
+                        BBT.update(current, newValue);
+                        System.out.println("Đã cập nhật nút " + current + " thành " + newValue + "\n");
+                        checkAndRepaint();
+                    } else {
+                        System.out.println("Nut " + newValue + " da ton tai!\n");
+                    }
+                } catch (NumberFormatException ex) {
+                    System.out.println("Lỗi: Giá trị nhập vào không hợp lệ.\n");
+                }
+            });
+        });
+    }
+
     private void saveStateForUndo() {
-        undoStack.push(GenericT.copyTree());
-        redoStack.clear();
+        if(typeTree == 0){
+            undoStackGT.push(GenericT.copyTree());
+            redoStackGT.clear();
+        } else if(typeTree == 1) {
+            undoStackBiT.push(BinaryT.copyTree());
+            redoStackBiT.clear();
+        } else if(typeTree == 2) {
+            undoStackBaT.push(BalanceT.copyTree());
+            redoStackBaT.clear();
+        } else if(typeTree == 3) {
+            undoStackBBT.push(BBT.copyTree());
+            redoStackBBT.clear();
+        }
     }
 
     @FXML
     public void handleUndo() {
-        if (!undoStack.isEmpty()) {
-            redoStack.push(GenericT.copyTree());
-            GenericT = undoStack.pop();
-            checkAndRepaint();
-        } else {
-            System.out.println( "Không thể undo thêm nữa.");
+        if(typeTree == 0){
+            if (!undoStackGT.isEmpty()) {
+                redoStackGT.push(GenericT.copyTree());
+                GenericT = undoStackGT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể undo thêm nữa.");
+            }
+        } else if(typeTree == 1) {
+            if (!undoStackBiT.isEmpty()) {
+                redoStackBiT.push(BinaryT.copyTree());
+                BinaryT = undoStackBiT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể undo thêm nữa.");
+            }
+        } else if(typeTree == 2) {
+            if (!undoStackBaT.isEmpty()) {
+                redoStackBaT.push(BalanceT.copyTree());
+                BalanceT = undoStackBaT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể undo thêm nữa.");
+            }
+        } else if(typeTree == 3) {
+            if (!undoStackBBT.isEmpty()) {
+                redoStackBBT.push(BBT.copyTree());
+                BBT = undoStackBBT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể undo thêm nữa.");
+            }
         }
     }
 
     @FXML
     public void handleRedo() {
-        if (!redoStack.isEmpty()) {
-            undoStack.push(GenericT.copyTree());
-            GenericT = redoStack.pop();
-            checkAndRepaint();
-        } else {
-            System.out.println( "Không thể redo thêm nữa.");
+        if(typeTree == 0){
+            if (!redoStackGT.isEmpty()) {
+                undoStackGT.push(GenericT.copyTree());
+                GenericT = redoStackGT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể redo thêm nữa.");
+            }
+        } else if(typeTree == 1) {
+            if (!redoStackBiT.isEmpty()) {
+                undoStackBiT.push(BinaryT.copyTree());
+                BinaryT = redoStackBiT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể redo thêm nữa.");
+            }
+        } else if(typeTree == 2) {
+            if (!redoStackBaT.isEmpty()) {
+                undoStackBaT.push(BalanceT.copyTree());
+                BalanceT = redoStackBaT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể redo thêm nữa.");
+            }
+        } else if(typeTree == 3) {
+            if (!redoStackBBT.isEmpty()) {
+                undoStackBBT.push(BBT.copyTree());
+                BBT = redoStackBBT.pop();
+                checkAndRepaint();
+            } else {
+                System.out.println( "Không thể redo thêm nữa.");
+            }
         }
     }
 
     private void checkAndRepaint() {
         treePane.getChildren().clear();
-        if (GenericT != null && GenericT.getRoot() != null) {
-            visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        if(typeTree == 0){
+            if (GenericT != null && GenericT.getRoot() != null) {
+                visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            }
+        } else if(typeTree == 1) {
+            if (BinaryT != null && BinaryT.getRoot() != null) {
+                visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            }
+        } else if(typeTree == 2) {
+            if (BalanceT != null && BalanceT.getRoot() != null) {
+                visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            }
+        } else if(typeTree == 3) {
+            if (BBT != null && BBT.getRoot() != null) {
+                visualizeTree(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            }
         }
     }
 }
