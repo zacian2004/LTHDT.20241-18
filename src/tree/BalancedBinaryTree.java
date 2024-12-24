@@ -24,5 +24,11 @@ public class BalancedBinaryTree extends BalancedTree {
         childNode.setParent(parentNode);
         parentNode.getChildren().add(childNode);
     }
+
+    public BalancedBinaryTree copyTree() {
+        BalancedBinaryTree newTree = new BalancedBinaryTree(0, 0);
+        newTree.setRoot(copyNode(this.root));
+        return newTree;
+    }
 }
 
