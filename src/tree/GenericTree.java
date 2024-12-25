@@ -47,7 +47,7 @@ public class GenericTree extends Tree{
     }
 
     @Override
-    public void delete(int child) {
+    public void delete(int value) {
         // Nếu root là null, không làm gì cả
         if (root == null) {
             System.out.println("Cây rỗng, không thể xóa");
@@ -55,31 +55,34 @@ public class GenericTree extends Tree{
         }
 
         // Nếu root là nút cần xóa
-        if (root.getData() == child) {
+        if (root.getData() == value) {
             root = null;  // Xóa cây (root = null)
             System.out.println("Cây đã bị xóa.");
             return;
         }
 
         // Nếu root không phải là nút cần xóa, tìm và xóa trong cây con
-        Node removeNode = search(root, child);
-
-        if (removeNode == null) {
+        if (deleteNode(root, value)) {
+            System.out.println("Nút " + value + " đã bị xóa.");
+        } else {
             System.out.println("Không tìm thấy nút cần xóa.");
-            return;
-        } else {
-            System.out.println("Da tìm thấy nút " + removeNode + " cần xóa.");
-        }
-
-        Node parent = removeNode.getParent();
-        if (parent != null) {
-            parent.getChildren().remove(removeNode);
-            System.out.println("Nút " + child + " đã bị xóa.");
-        } else {
-            System.out.println("Khong tìm thấy nút cha");
         }
     }
 
+    private boolean deleteNode(Node current, int value) {
+        for (Node child : current.getChildren()) {
+            if (child.getData() == value) {
+                current.getChildren().remove(child); // Phát hiện nút cần xóa, tiến hành xóa
+                return true; // Xóa thành công
+            }
+    
+            // Gọi đệ quy để tìm nút cần xóa trong cây con
+            if (deleteNode(child, value)) {
+                return true; // Xóa thành công ở cây con
+            }
+        }
+        return false; // Node not found
+    }
 
     @Override
     public void update(int currentV, int newV) {
