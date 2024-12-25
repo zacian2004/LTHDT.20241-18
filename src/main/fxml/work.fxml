@@ -25,13 +25,13 @@
             <Menu mnemonicParsing="false" text="Operation">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleInsert" text="Insert" />
-                  <MenuItem mnemonicParsing="false" text="Search" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSearch" text="Search" />
                   <MenuItem mnemonicParsing="false" onAction="#handleUpdate" text="Update" />
                   <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
                   <Menu mnemonicParsing="false" text="Traverse">
                     <items>
                       <MenuItem mnemonicParsing="false" text="BFS" />
-                        <MenuItem mnemonicParsing="false" text="DFS" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleDFS" text="DFS" />
                     </items>
                   </Menu>
                </items>
