@@ -155,6 +155,7 @@ public class work {
             Circle circle = new Circle(x, y, 15, Color.ORANGE);
             Text text = new Text(String.valueOf(node.getData()));
             text.setFill(Color.BLACK);
+            text.setStyle("-fx-font-weight: bold;");
             text.setX(x - 5);
             text.setY(y + 5);
             // Thêm các thành phần vào giao diện
@@ -163,6 +164,7 @@ public class work {
             Circle circle = new Circle(x, y, 15, Color.BLACK);
             Text text = new Text(String.valueOf(node.getData()));
             text.setFill(Color.WHITE);
+            text.setStyle("-fx-font-weight: bold;");
             text.setX(x - 5);
             text.setY(y + 5);
             // Thêm các thành phần vào giao diện
@@ -227,11 +229,25 @@ public class work {
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BalanceT.insert(parentVal, childVal);
+                if(!BalanceT.isBalanced()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Cây không cân bằng\n Tiến hành cân bằng cây");
+                    alert.show();
+                    BalanceT.balance();
+                }
                 visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else if(typeTree == 3 && !BBT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BBT.insert(parentVal, childVal);
+                if(!BBT.isBalanced()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Cây không cân bằng\n Tiến hành cân bằng cây");
+                    alert.show();
+                    BBT.balance();
+                }
                 visualizeTree(BBT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else {
                 //Thông báo node đã tồn tại
