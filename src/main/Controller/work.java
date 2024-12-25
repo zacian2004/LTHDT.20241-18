@@ -3,6 +3,7 @@ package main.Controller;
 import java.util.Optional;
 import java.util.Stack;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tree.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -129,13 +131,13 @@ public class work {
     @FXML
     public void handlePlay(ActionEvent event) throws Exception {
         if(typeTree == 0){
-            visualizeTree(GenericT.getRoot(), 400, 50, 200, 100, searchFlag);
+            visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
         } else if(typeTree == 1) {
-            visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100, searchFlag);
+            visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
         } else if(typeTree == 2) {
-            visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100, searchFlag);
+            visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
         } else if(typeTree == 3) {
-            visualizeTree(BBT.getRoot(), 400, 50, 200, 100, searchFlag);
+            visualizeTree(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
         }
     }
 
@@ -191,6 +193,55 @@ public class work {
         }
     }
 
+    private void visualizeDFS(tree.Node node, double x, double y, double xOffset, double yOffset) {
+        if (node == null) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Cây chưa được khởi tạo");
+            alert.showAndWait();
+            return;
+        }
+
+        // Highlight nút hiện tại
+        Circle circle = new Circle(x, y, 15, Color.ORANGE);
+        Text text = new Text(String.valueOf(node.getData()));
+        text.setFill(Color.BLACK);
+        text.setStyle("-fx-font-weight: bold;");
+        text.setX(x - 5);
+        text.setY(y + 5);
+
+        // Thêm vào pane
+        treePane.getChildren().addAll(circle, text);
+
+        // Pause for visualization effect
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> {
+            // Continue to children after pause
+            int totalChildren = node.getChildren().size();
+            if (totalChildren == 0) return;
+
+            double startX = x - (xOffset * (totalChildren - 1) / 2); // Starting x position for children
+
+            for (int i = 0; i < totalChildren; i++) {
+                tree.Node child = node.getChildren().get(i);
+                double childX = startX + (i * xOffset);
+                double childY = y + yOffset;
+
+                // Draw line connecting parent and child
+                Line line = new Line(x, y, childX, childY);
+                treePane.getChildren().add(line);
+
+                // Recursively visualize DFS for the child node
+                visualizeDFS(child, childX, childY, xOffset / 1.5, yOffset);
+            }
+
+            // Reset the node color after traversal
+            circle.setFill(Color.BLACK);
+        });
+
+        pause.play();
+    }
+
     @FXML
     public void handleInsert(ActionEvent event) {
         try {
@@ -219,12 +270,12 @@ public class work {
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 GenericT.insert(parentVal, childVal);
-                visualizeTree(GenericT.getRoot(), 400, 50, 200, 100, searchFlag);
+                visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 1 && !BinaryT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BinaryT.insert(parentVal, childVal);
-                visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100, searchFlag);
+                visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 2 && !BalanceT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
@@ -236,7 +287,7 @@ public class work {
                     alert.show();
                     BalanceT.balance();
                 }
-                visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100, searchFlag);
+                visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 3 && !BBT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
@@ -248,7 +299,7 @@ public class work {
                     alert.show();
                     BBT.balance();
                 }
-                visualizeTree(BBT.getRoot(), 400, 50, 200, 100, searchFlag);
+                visualizeTree(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else {
                 //Thông báo node đã tồn tại
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -395,6 +446,29 @@ public class work {
                 }
             });
         });
+    }
+
+    @FXML
+    private void handleDFS() {
+        if(typeTree == 0 && GenericT.getRoot()!= null){
+            visualizeDFS(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        } else if(typeTree == 1 && BinaryT.getRoot()!= null){
+            visualizeDFS(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        } else if(typeTree == 2 && BalanceT.getRoot()!= null){
+            visualizeDFS(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        } else if(typeTree == 3 && BBT.getRoot()!= null){
+            visualizeDFS(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+        } else {
+            System.out.println("Cay rong!\n");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Cây r��ng");
+            alert.show();
+        }
+        // In kết quả
+
+        // Trả lại diện mạo cũ
+        checkAndRepaint();
     }
 
     public void showSuccessUpdate() {
