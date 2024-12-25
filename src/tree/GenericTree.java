@@ -135,17 +135,8 @@ public class GenericTree extends Tree{
         return count;
     }
 
-    public boolean isFound(int value){
-        if(root == null) return false; 
-
-        if(root.getData() == value) return true;
-
-        for(Node child : root.getChildren()) {
-            Node found = search(child, value);
-            if(found!= null) return true;
-        }
-
-        return false;
+    public boolean isFound(int value) {
+        return search(root, value) != null;
     }
 
 }
