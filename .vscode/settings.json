@@ -1,14 +1,8 @@
 {
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.base.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.controls.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.fxml.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.graphics.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.media.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.swing.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx.web.jar",
-        "d:\\Download\\openjfx-23.0.1_windows-x64_bin-sdk\\javafx-sdk-23.0.1\\lib\\javafx-swt.jar",
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx.base.jar",
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx.controls.jar",
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx.fxml.jar",
@@ -17,10 +11,5 @@
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx.swing.jar",
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx.web.jar",
         "c:\\Program Files\\Java\\javafx-sdk-23.0.1\\lib\\javafx-swt.jar"
-    ],
-    "java.project.sourcePaths": [
-        "VisualizationTreeOperationProject/src",
-        "src"
-    ],
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
+    ]
 }

@@ -1,10 +1,9 @@
 package tree;
 
-import interfaces.balanceable.Balanceable;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class BalancedTree extends GenericTree implements Balanceable {
+public class BalancedTree extends GenericTree {
     private int maxDepthDifference;
 
     public BalancedTree(int rootData, int maxDepthDifference) {
@@ -13,7 +12,6 @@ public class BalancedTree extends GenericTree implements Balanceable {
     }
 
     // Phương thức kiểm tra cân bằng cây
-    @Override
     public boolean isBalanced() {
         int maxDepth = getMaxDepth(getRoot());
         int minDepth = getMinDepth(getRoot());
@@ -38,7 +36,6 @@ public class BalancedTree extends GenericTree implements Balanceable {
     }
     
     // Phương thức cân bằng lại cây nếu cần thiết
-    @Override
     public void balance() {
         while (!isBalanced()) {
             Node deepestNode = findDeepestNode(getRoot());

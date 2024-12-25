@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="960.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller.work">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1280.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+               <items>
+              <MenuItem fx:id="New" mnemonicParsing="false" onAction="#NewClick" text="New" />
+                  <MenuItem fx:id="iniroot" mnemonicParsing="false" onAction="#inirootClick" text="Init Root" />
+                  <MenuItem fx:id="menuButton" mnemonicParsing="false" onAction="#menuClick" text="Menu" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Quit" />
+               </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Operation">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleInsert" text="Insert" />
+                  <MenuItem mnemonicParsing="false" text="Search" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleUpdate" text="Update" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+                  <Menu mnemonicParsing="false" text="Traverse">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="BFS" />
+                        <MenuItem mnemonicParsing="false" text="DFS" />
+                    </items>
+                  </Menu>
+               </items>
+            </Menu>
+          <Menu mnemonicParsing="false" onAction="#handleHelpClicked" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Button layoutX="640.0" layoutY="914.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Pause" />
+      <Button fx:id="redoButton" layoutX="488.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleRedo" prefHeight="25.0" prefWidth="76.0" text="Redo" />
+      <Button fx:id="undButton" layoutX="564.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleUndo" prefHeight="25.0" prefWidth="76.0" text="Undo" />
+      <Button layoutX="716.0" layoutY="914.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Resume" />
+      <Button layoutX="21.0" layoutY="914.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="58.0" text="Play" />
+      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="875.0" prefWidth="1149.0" />
+      <Slider fx:id="zoomSlider" layoutX="98.0" layoutY="920.0" prefHeight="14.0" prefWidth="197.0" />
+   </children>
+</AnchorPane>
