@@ -63,11 +63,20 @@ public class GenericTree extends Tree{
 
         // Nếu root không phải là nút cần xóa, tìm và xóa trong cây con
         Node removeNode = search(root, child);
-        if ( removeNode.getParent() != null) {
-            removeNode.getParent().getChildren().removeIf(node -> node.getData() == child);
+
+        if (removeNode == null) {
+            System.out.println("Không tìm thấy nút cần xóa.");
+            return;
+        } else {
+            System.out.println("Da tìm thấy nút " + removeNode + " cần xóa.");
+        }
+
+        Node parent = removeNode.getParent();
+        if (parent != null) {
+            parent.getChildren().remove(removeNode);
             System.out.println("Nút " + child + " đã bị xóa.");
         } else {
-            System.out.println("Không tìm thấy nút cần xóa.");
+            System.out.println("Khong tìm thấy nút cha");
         }
     }
 
@@ -108,7 +117,9 @@ public class GenericTree extends Tree{
     }
     public GenericTree copyTree() {
         GenericTree newTree = new GenericTree(0);
-        newTree.setRoot(copyNode(this.root));
+        if (this.root != null) {
+            newTree.setRoot(copyNode(this.root)); // Deep copy the root and its subtree
+        }
         return newTree;
     }
 
@@ -138,5 +149,6 @@ public class GenericTree extends Tree{
     public boolean isFound(int value) {
         return search(root, value) != null;
     }
+    
 
 }
