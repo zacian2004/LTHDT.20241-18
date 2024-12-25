@@ -30,17 +30,17 @@ public class work {
     public static GenericTree GenericT;
     public static BinaryTree BinaryT;
     public static int maxDepthDiff;
-    private Stack<GenericTree> undoStackGT;
-    private Stack<GenericTree> redoStackGT;
+    public static Stack<GenericTree> undoStackGT;
+    public static Stack<GenericTree> redoStackGT;
 
-    private Stack<BinaryTree> undoStackBiT;
-    private Stack<BinaryTree> redoStackBiT;
+    public static Stack<BinaryTree> undoStackBiT;
+    public static Stack<BinaryTree> redoStackBiT;
     
-    private Stack<BalancedTree> undoStackBaT;
-    private Stack<BalancedTree> redoStackBaT;
+    public static Stack<BalancedTree> undoStackBaT;
+    public static Stack<BalancedTree> redoStackBaT;
 
-    private Stack<BalancedBinaryTree> undoStackBBT;
-    private Stack<BalancedBinaryTree> redoStackBBT;
+    public static Stack<BalancedBinaryTree> undoStackBBT;
+    public static Stack<BalancedBinaryTree> redoStackBBT;
  
     private Stage stage;
     private Scene scene;
@@ -70,14 +70,6 @@ public class work {
 
     @FXML
     public void initialize() {
-        undoStackGT = new Stack<>();
-        redoStackGT = new Stack<>();
-        undoStackBiT = new Stack<>();
-        redoStackBiT = new Stack<>();
-        undoStackBaT = new Stack<>();
-        redoStackBaT = new Stack<>();
-        undoStackBBT = new Stack<>();
-        redoStackBBT = new Stack<>();
 
         // Áp dụng scale cho treePane
         treePane.getTransforms().add(scale);
