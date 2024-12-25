@@ -31,6 +31,8 @@ public class work {
     public static GenericTree GenericT;
     public static BinaryTree BinaryT;
     public static int maxDepthDiff;
+    public static int searchData;
+    public static boolean searchFlag;
     public static Stack<GenericTree> undoStackGT;
     public static Stack<GenericTree> redoStackGT;
 
@@ -127,17 +129,17 @@ public class work {
     @FXML
     public void handlePlay(ActionEvent event) throws Exception {
         if(typeTree == 0){
-            visualizeTree(GenericT.getRoot(), 400, 50, 200, 100);
+            visualizeTree(GenericT.getRoot(), 400, 50, 200, 100, searchFlag);
         } else if(typeTree == 1) {
-            visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100);
+            visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100, searchFlag);
         } else if(typeTree == 2) {
-            visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100);
+            visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100, searchFlag);
         } else if(typeTree == 3) {
-            visualizeTree(BBT.getRoot(), 400, 50, 200, 100);
+            visualizeTree(BBT.getRoot(), 400, 50, 200, 100, searchFlag);
         }
     }
 
-    private void visualizeTree(tree.Node node, double x, double y, double xOffset, double yOffset) {
+    private void visualizeTree(tree.Node node, double x, double y, double xOffset, double yOffset, boolean search) {
         
         if (node == null) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -148,14 +150,24 @@ public class work {
         }
     
         // Vẽ nút hiện tại (hình tròn + giá trị)
-        Circle circle = new Circle(x, y, 15, Color.BLACK);
-        Text text = new Text(String.valueOf(node.getData()));
-        text.setFill(Color.WHITE);
-        text.setX(x - 5);
-        text.setY(y + 5);
-    
-        // Thêm các thành phần vào giao diện
-        treePane.getChildren().addAll(circle, text);
+
+        if(search && node.getData() == searchData){
+            Circle circle = new Circle(x, y, 15, Color.ORANGE);
+            Text text = new Text(String.valueOf(node.getData()));
+            text.setFill(Color.BLACK);
+            text.setX(x - 5);
+            text.setY(y + 5);
+            // Thêm các thành phần vào giao diện
+            treePane.getChildren().addAll(circle, text);
+        } else {
+            Circle circle = new Circle(x, y, 15, Color.BLACK);
+            Text text = new Text(String.valueOf(node.getData()));
+            text.setFill(Color.WHITE);
+            text.setX(x - 5);
+            text.setY(y + 5);
+            // Thêm các thành phần vào giao diện
+            treePane.getChildren().addAll(circle, text);
+        }
     
         // Tính toán vị trí các nút con và vẽ chúng
         int totalChildren = node.getChildren().size();
@@ -173,7 +185,7 @@ public class work {
             treePane.getChildren().add(line);
     
             // Đệ quy vẽ các nút con
-            visualizeTree(child, childX, childY, xOffset / 1.5, yOffset);
+            visualizeTree(child, childX, childY, xOffset / 1.5, yOffset, search);
         }
     }
 
@@ -205,22 +217,22 @@ public class work {
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 GenericT.insert(parentVal, childVal);
-                visualizeTree(GenericT.getRoot(), 400, 50, 200, 100);
+                visualizeTree(GenericT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else if(typeTree == 1 && !BinaryT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BinaryT.insert(parentVal, childVal);
-                visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100);
+                visualizeTree(BinaryT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else if(typeTree == 2 && !BalanceT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BalanceT.insert(parentVal, childVal);
-                visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100);
+                visualizeTree(BalanceT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else if(typeTree == 3 && !BBT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BBT.insert(parentVal, childVal);
-                visualizeTree(BBT.getRoot(), 400, 50, 200, 100);
+                visualizeTree(BBT.getRoot(), 400, 50, 200, 100, searchFlag);
             } else {
                 //Thông báo node đã tồn tại
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -273,6 +285,43 @@ public class work {
                 alert.show();
             }
         });
+    }
+
+    @FXML
+    private void handleSearch() {
+        searchFlag = true;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Search Node");
+        dialog.setHeaderText("Nhập giá trị nút cần tìm:");
+        dialog.setContentText("Value:");
+        dialog.showAndWait().ifPresent(searchStr -> {
+            try {
+                int searchValue = Integer.parseInt(searchStr);
+                searchData = searchValue;
+
+                if(typeTree == 0 && GenericT.isFound(searchValue)){
+                    checkAndRepaint();
+                } else if(typeTree == 1 && BinaryT.isFound(searchValue)){
+                    checkAndRepaint();
+                } else if(typeTree == 2 && BalanceT.isFound(searchValue)){
+                    checkAndRepaint();
+                } else if(typeTree == 3 && BBT.isFound(searchValue)){
+                    checkAndRepaint();
+                } else {
+                    System.out.println("Nut " + searchValue + " da ton tai!\n");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Node không tồn tại");
+                    alert.show();
+                }
+            } catch (NumberFormatException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("Invalid input");
+                alert.show();
+            }
+        });
+        searchFlag = false;
     }
 
     @FXML
@@ -446,19 +495,19 @@ public class work {
         treePane.getChildren().clear();
         if(typeTree == 0){
             if (GenericT != null && GenericT.getRoot() != null) {
-                visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+                visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             }
         } else if(typeTree == 1) {
             if (BinaryT != null && BinaryT.getRoot() != null) {
-                visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+                visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             }
         } else if(typeTree == 2) {
             if (BalanceT != null && BalanceT.getRoot() != null) {
-                visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+                visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             }
         } else if(typeTree == 3) {
             if (BBT != null && BBT.getRoot() != null) {
-                visualizeTree(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+                visualizeTree(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             }
         }
     }
