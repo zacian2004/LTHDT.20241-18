@@ -2,6 +2,7 @@ package main;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Stack;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -65,20 +66,28 @@ public class init implements Initializable{
             if (selectedTreeType.equals("Generic Tree")) {
                 work.typeTree = 0;
                 work.GenericT = new GenericTree(rootVal); // Tạo GenericTree
+                work.undoStackGT = new Stack<>();
+                work.redoStackGT = new Stack<>();
                 System.out.println("Generic Tree created with root: " + rootVal);
             } else if (selectedTreeType.equals("Balanced Tree")) {
                 work.typeTree = 2;
                 work.BalanceT = new BalancedTree(rootVal, depthDiff);
+                work.undoStackBaT = new Stack<>();
+                work.redoStackBaT = new Stack<>();
                 work.maxDepthDiff = depthDiff; // Lưu độ sâu khác biệt
                 System.out.println("Balanced Tree created with root: " + rootVal + ", Max Depth Diff: " + depthDiff);
             } else if (selectedTreeType.equals("Binary Balanced Tree")) {
                 work.typeTree = 3;
                 work.BBT = new BalancedBinaryTree(rootVal, depthDiff);
+                work.undoStackBBT = new Stack<>();
+                work.redoStackBBT = new Stack<>();
                 work.maxDepthDiff = depthDiff;
                 System.out.println("Binary Balanced Tree created with root: " + rootVal + ", Max Depth Diff: " + depthDiff);
             } else if (selectedTreeType.equals("Binary Tree")) {
                 work.typeTree = 1;
                 work.BinaryT = new BinaryTree(rootVal);
+                work.undoStackBiT = new Stack<>();
+                work.redoStackBiT = new Stack<>();
                 System.out.println("Binary Tree created with root: " + rootVal);
             }
 
