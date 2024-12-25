@@ -11,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="960.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.Controller.work">
    <children>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1280.0">
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
                <items>
@@ -43,12 +43,12 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Button layoutX="640.0" layoutY="914.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Pause" />
-      <Button fx:id="redoButton" layoutX="488.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleRedo" prefHeight="25.0" prefWidth="76.0" text="Redo" />
-      <Button fx:id="undButton" layoutX="564.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleUndo" prefHeight="25.0" prefWidth="76.0" text="Undo" />
-      <Button layoutX="716.0" layoutY="914.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Resume" />
-      <Button layoutX="21.0" layoutY="914.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="58.0" text="Play" />
-      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="875.0" prefWidth="1149.0" />
-      <Slider fx:id="zoomSlider" layoutX="98.0" layoutY="920.0" prefHeight="14.0" prefWidth="197.0" />
+      <Button layoutX="1109.0" layoutY="915.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Pause" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="19.0" />
+      <Button fx:id="redoButton" layoutX="957.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleRedo" prefHeight="25.0" prefWidth="76.0" text="Redo" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="171.0" />
+      <Button fx:id="undButton" layoutX="1033.0" layoutY="915.0" mnemonicParsing="false" onAction="#handleUndo" prefHeight="25.0" prefWidth="76.0" text="Undo" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="95.0" />
+      <Button layoutX="957.0" layoutY="916.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Resume" AnchorPane.bottomAnchor="19.0" AnchorPane.rightAnchor="247.0" />
+      <Button layoutX="21.0" layoutY="914.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="58.0" text="Play" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="21.0" />
+      <Pane fx:id="treePane" layoutX="112.0" layoutY="27.0" prefHeight="875.0" prefWidth="1260.0" AnchorPane.bottomAnchor="58.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="27.0" />
+      <Slider fx:id="zoomSlider" layoutX="104.0" layoutY="921.0" prefHeight="14.0" prefWidth="197.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="104.0" />
    </children>
 </AnchorPane>
