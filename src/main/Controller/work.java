@@ -1,9 +1,15 @@
 package main.Controller;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Stack;
 
-import javafx.animation.PauseTransition;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,8 +30,12 @@ import javafx.util.Duration;
 import tree.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 
 public class work {
+    //data tree 
+    private ArrayList<nodeInfo> listNodeInfosDFS = new ArrayList<nodeInfo>();
+    private ArrayList<nodeInfo> listNodeInfosBFS = new ArrayList<nodeInfo>();
     //Data của cây
     public static int typeTree = 0; // generic = 0, binary = 1, balance = 2, balancebinary = 3;
     public static BalancedBinaryTree BBT;
@@ -51,6 +61,8 @@ public class work {
     private Scene scene;
     private Parent root;
 
+    private Timeline timeline;
+    
     @FXML
     private Slider zoomSlider;
 
@@ -74,8 +86,13 @@ public class work {
     private Pane treePane;
 
     @FXML
-    public void initialize() {
+    private Button resumeButton; 
 
+    @FXML
+    private Button pauseButton;
+
+    @FXML
+    public void initialize() {
         // Áp dụng scale cho treePane
         treePane.getTransforms().add(scale);
 
@@ -150,34 +167,28 @@ public class work {
             alert.showAndWait();
             return;
         }
-    
         // Vẽ nút hiện tại (hình tròn + giá trị)
-
-        if(search && node.getData() == searchData){
-            Circle circle = new Circle(x, y, 15, Color.ORANGE);
-            Text text = new Text(String.valueOf(node.getData()));
-            text.setFill(Color.BLACK);
-            text.setStyle("-fx-font-weight: bold;");
-            text.setX(x - 5);
-            text.setY(y + 5);
-            // Thêm các thành phần vào giao diện
-            treePane.getChildren().addAll(circle, text);
+        Circle circle;
+        if (search && node.getData() == searchData) {
+            circle = new Circle(x, y, 15, Color.ORANGE); // Node đang được tìm kiếm
         } else {
-            Circle circle = new Circle(x, y, 15, Color.BLACK);
-            Text text = new Text(String.valueOf(node.getData()));
-            text.setFill(Color.WHITE);
-            text.setStyle("-fx-font-weight: bold;");
-            text.setX(x - 5);
-            text.setY(y + 5);
-            // Thêm các thành phần vào giao diện
-            treePane.getChildren().addAll(circle, text);
+            circle = new Circle(x, y, 15, Color.BLACK); // Các node khác
         }
     
-        // Tính toán vị trí các nút con và vẽ chúng
-        int totalChildren = node.getChildren().size();
-        if (totalChildren == 0) return; // Không có con thì dừng lại
+            Text text = new Text(String.valueOf(node.getData()));
+            text.setFill(search && node.getData() == searchData ? Color.BLACK : Color.WHITE);
+            text.setStyle("-fx-font-weight: bold;");
+            text.setX(x - 5);
+            text.setY(y + 5);
     
-        double startX = x - (xOffset * (totalChildren - 1) / 2); // Vị trí bắt đầu cho các nút con
+            // Thêm các thành phần vào giao diện
+            treePane.getChildren().addAll(circle, text);
+    
+        // Kiểm tra và vẽ các nút con
+        int totalChildren = node.getChildren().size();
+        if (totalChildren == 0) return; // Nếu không có con, kết thúc
+    
+        double startX = x - (xOffset * (totalChildren - 1) / 2);
     
         for (int i = 0; i < totalChildren; i++) {
             tree.Node child = node.getChildren().get(i);
@@ -193,7 +204,8 @@ public class work {
         }
     }
 
-    private void visualizeDFS(tree.Node node, double x, double y, double xOffset, double yOffset) {
+    private void updateNodePositionDFS(tree.Node node, double x, double y, double xOffset, double yOffset) {
+        
         if (node == null) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
@@ -201,45 +213,146 @@ public class work {
             alert.showAndWait();
             return;
         }
+        //lưu thong tin theo DFS
+        listNodeInfosDFS.add(new nodeInfo(node.getData(), x, y));
+        // Kiểm tra và vẽ các nút con
+        int totalChildren = node.getChildren().size();
+        if (totalChildren == 0) return; 
+    
+        // Tính toán khoảng cách giữa các nút con
+        double startX = x - (xOffset * (totalChildren - 1) / 2);
+    
+        for (int i = 0; i < totalChildren; i++) {
+            tree.Node child = node.getChildren().get(i);
+            double childX = startX + (i * xOffset); // Tính toán tọa độ x cho từng nút con
+            double childY = y + yOffset; // Tọa độ y của nút con
 
-        // Highlight nút hiện tại
-        Circle circle = new Circle(x, y, 15, Color.ORANGE);
-        Text text = new Text(String.valueOf(node.getData()));
-        text.setFill(Color.BLACK);
-        text.setStyle("-fx-font-weight: bold;");
-        text.setX(x - 5);
-        text.setY(y + 5);
+            updateNodePositionDFS(child, childX, childY, xOffset / 1.5, yOffset);
+        }
+    }
 
-        // Thêm vào pane
-        treePane.getChildren().addAll(circle, text);
+    private void updateNodePositionBFS(Node root, double x, double y, double xOffset, double yOffset) {
+        listNodeInfosBFS.clear();
+        listNodeInfosDFS.clear();
+        //Lưu tất cả các node vào 1 mảng bao gồm giá trị và x, y
+        updateNodePositionDFS(root, x, y, xOffset, yOffset);
 
-        // Pause for visualization effect
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-        pause.setOnFinished(e -> {
-            // Continue to children after pause
-            int totalChildren = node.getChildren().size();
-            if (totalChildren == 0) return;
+        Queue<Node> queue = new LinkedList<>();
 
-            double startX = x - (xOffset * (totalChildren - 1) / 2); // Starting x position for children
+        queue.add(root);
 
-            for (int i = 0; i < totalChildren; i++) {
-                tree.Node child = node.getChildren().get(i);
-                double childX = startX + (i * xOffset);
-                double childY = y + yOffset;
-
-                // Draw line connecting parent and child
-                Line line = new Line(x, y, childX, childY);
-                treePane.getChildren().add(line);
-
-                // Recursively visualize DFS for the child node
-                visualizeDFS(child, childX, childY, xOffset / 1.5, yOffset);
+        while (!queue.isEmpty()) {
+            Node currentNode = queue.poll();
+            listNodeInfosBFS.add(findnodeInfo(currentNode.getData()));
+            for (Node child : currentNode.getChildren()) {
+                queue.add(child);
             }
+        }
+    }
 
-            // Reset the node color after traversal
-            circle.setFill(Color.BLACK);
+    private nodeInfo findnodeInfo(int data) {
+        for (nodeInfo info : listNodeInfosDFS) {
+            if (info.getData() == data) return info;
+        }
+        return null;
+    }
+
+    public void visualizeDFS(tree.Node node) {
+        listNodeInfosDFS.clear();
+        updateNodePositionDFS(node, treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+    
+        timeline = new Timeline();
+    
+        // Tạo các KeyFrame với delay cố định (1 giây)
+        for (int i = 0; i < listNodeInfosDFS.size(); i++) {
+            nodeInfo nodeInfo = listNodeInfosDFS.get(i);
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(i), event -> drawNode(nodeInfo));
+            timeline.getKeyFrames().add(keyFrame);
+        }
+    
+        // Khi hoàn thành DFS
+        timeline.setOnFinished(event -> {
+            System.out.println("Visualization completed.");
+            resumeButton.setDisable(true);
+            pauseButton.setDisable(true);
         });
+    
+        // Bắt đầu chạy Timeline
+        timeline.play();
+        pauseButton.setDisable(false);
+    
+        // Nút Resume
+        resumeButton.setOnAction(event -> {
+            if (timeline.getStatus() == Animation.Status.PAUSED) {
+                timeline.play();
+                resumeButton.setDisable(true);
+                pauseButton.setDisable(false);
+            }
+        });
+    
+        // Nút Pause
+        pauseButton.setOnAction(event -> {
+            if (timeline.getStatus() == Animation.Status.RUNNING) {
+                timeline.pause();
+                resumeButton.setDisable(false);
+                pauseButton.setDisable(true);
+            }
+        });
+    }
+    
+    public void visualizeBFS(Node root) {
+        listNodeInfosBFS.clear();
+        updateNodePositionBFS(root, treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
 
-        pause.play();
+        timeline = new Timeline();
+    
+        // Tạo các KeyFrame với delay cố định (1 giây)
+        for (int i = 0; i < listNodeInfosBFS.size(); i++) {
+            nodeInfo nodeInfo = listNodeInfosBFS.get(i);
+            KeyFrame keyFrame = new KeyFrame(Duration.seconds(i), event -> drawNode(nodeInfo));
+            timeline.getKeyFrames().add(keyFrame);
+        }
+    
+        // Khi hoàn thành DFS
+        timeline.setOnFinished(event -> {
+            System.out.println("Visualization completed.");
+            resumeButton.setDisable(true);
+            pauseButton.setDisable(true);
+        });
+    
+        // Bắt đầu chạy Timeline
+        timeline.play();
+        pauseButton.setDisable(false);
+    
+        // Nút Resume
+        resumeButton.setOnAction(event -> {
+            if (timeline.getStatus() == Animation.Status.PAUSED) {
+                timeline.play();
+                resumeButton.setDisable(true);
+                pauseButton.setDisable(false);
+            }
+        });
+    
+        // Nút Pause
+        pauseButton.setOnAction(event -> {
+            if (timeline.getStatus() == Animation.Status.RUNNING) {
+                timeline.pause();
+                resumeButton.setDisable(false);
+                pauseButton.setDisable(true);
+            }
+        });
+    }
+
+    private void drawNode(nodeInfo nodeInfo) {
+        Circle circle = new Circle(nodeInfo.getX(), nodeInfo.getY(), 15, Color.ORANGE);
+    
+            Text text = new Text(String.valueOf(nodeInfo.getData()));
+            text.setFill(Color.BLACK);
+            text.setStyle("-fx-font-weight: bold;");
+            text.setX(nodeInfo.getX() - 5);
+            text.setY(nodeInfo.getY() + 5);
+
+            treePane.getChildren().addAll(circle, text);
     }
 
     @FXML
@@ -270,12 +383,12 @@ public class work {
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 GenericT.insert(parentVal, childVal);
-                visualizeTree(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
+                visualizeTree(GenericT.getRoot(),  treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 1 && !BinaryT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
                 BinaryT.insert(parentVal, childVal);
-                visualizeTree(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
+                visualizeTree(BinaryT.getRoot(),  treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 2 && !BalanceT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
@@ -287,7 +400,7 @@ public class work {
                     alert.show();
                     BalanceT.balance();
                 }
-                visualizeTree(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
+                visualizeTree(BalanceT.getRoot(),  treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75, searchFlag);
             } else if(typeTree == 3 && !BBT.isFound(childVal)){
                 saveStateForUndo();
                 treePane.getChildren().clear();
@@ -451,18 +564,18 @@ public class work {
     @FXML
     private void handleDFS() {
         if(typeTree == 0 && GenericT.getRoot()!= null){
-            visualizeDFS(GenericT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            visualizeDFS(GenericT.getRoot());
         } else if(typeTree == 1 && BinaryT.getRoot()!= null){
-            visualizeDFS(BinaryT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            visualizeDFS(BinaryT.getRoot());
         } else if(typeTree == 2 && BalanceT.getRoot()!= null){
-            visualizeDFS(BalanceT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            visualizeDFS(BalanceT.getRoot());
         } else if(typeTree == 3 && BBT.getRoot()!= null){
-            visualizeDFS(BBT.getRoot(), treePane.getWidth() / 2, 50, treePane.getWidth() / 4, 75);
+            visualizeDFS(BBT.getRoot());
         } else {
             System.out.println("Cay rong!\n");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setContentText("Cây r��ng");
+            alert.setContentText("Cây Rỗng");
             alert.show();
         }
         // In kết quả
@@ -470,6 +583,31 @@ public class work {
         // Trả lại diện mạo cũ
         checkAndRepaint();
     }
+
+    @FXML
+    private void handleBFS() {
+        if(typeTree == 0 && GenericT.getRoot()!= null){
+            visualizeBFS(GenericT.getRoot());
+        } else if(typeTree == 1 && BinaryT.getRoot()!= null){
+            visualizeBFS(BinaryT.getRoot());
+        } else if(typeTree == 2 && BalanceT.getRoot()!= null){
+            visualizeBFS(BalanceT.getRoot());
+        } else if(typeTree == 3 && BBT.getRoot()!= null){
+            visualizeBFS(BBT.getRoot());
+        } else {
+            System.out.println("Cay rong!\n");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Cây Rỗng");
+            alert.show();
+        }
+        // In kết quả
+
+        // Trả lại diện mạo cũ
+        checkAndRepaint();
+    }
+
+
 
     public void showSuccessUpdate() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -615,5 +753,23 @@ public class work {
         stage.setTitle("Help");
         stage.show();
     }
-    
+
+    @FXML void handleQuit(ActionEvent event) {
+        // Tạo hộp thoại xác nhận
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác Nhận Thoát");
+        alert.setHeaderText("Bạn có chắc chắn muốn thoát ứng dụng?");
+        alert.setContentText("Nhấn \"OK\" để thoát, hoặc \"Cancel\" để quay lại.");
+
+        // Hiển thị hộp thoại và chờ phản hồi từ người dùng
+        Optional<ButtonType> result = alert.showAndWait();
+
+        // Kiểm tra nếu người dùng chọn OK
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println("Quitting...");
+            System.exit(0); // Thoát ứng dụng
+        } else {
+            System.out.println("Quitting canceled.");
+        }
+    }
 }

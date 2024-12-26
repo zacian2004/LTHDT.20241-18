@@ -3,6 +3,9 @@ package tree;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class BalancedTree extends GenericTree {
     private int maxDepthDifference;
 
@@ -50,7 +53,10 @@ public class BalancedTree extends GenericTree {
                     deepestNode.setParent(shallowestNode);
                 }
             } else {
-                System.out.println("Không thể tiếp tục cân bằng cây.");
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setContentText("Không thể cân bằng cây");
+                alert.showAndWait();
                 break;
             }
         }
