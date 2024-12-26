@@ -1,6 +1,5 @@
 package test;
 
-import tree.BinaryTree;
 import tree.GenericTree;
 import java.util.Scanner;
 
