@@ -4,6 +4,9 @@ package tree;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class GenericTree extends Tree{
     protected Node root;
 
@@ -24,7 +27,9 @@ public class GenericTree extends Tree{
     public void insert(int parent, int child) {
         Node parentNode = search(root, parent);
         if(parentNode == null) {
-            System.out.println("Không tìm thấy nút cha cần chèn");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Parent node not found");
             return;
         }
         Node chilNode = new Node(child);
@@ -88,7 +93,10 @@ public class GenericTree extends Tree{
     public void update(int currentV, int newV) {
         Node Node = search(root, currentV);
         if(Node == null) {
-            System.out.println("Không tìm thấy nút cần cập nhật");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setContentText("Không tìm thấy nút cần cập nhật");
+            alert.show();
             return;
         }
         Node.setData(newV);
@@ -108,7 +116,6 @@ public class GenericTree extends Tree{
         if (root == null) {
             return;
         }
-
         Queue<Node> queue = new LinkedList<>();
         queue.add(root);
 

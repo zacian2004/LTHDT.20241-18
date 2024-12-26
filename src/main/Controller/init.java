@@ -51,15 +51,21 @@ public class init implements Initializable{
 
             // Kiểm tra điều kiện đầu vào
             if (selectedTreeType == null || rootValue.getText().isEmpty()) {
-                System.out.println("Vui lòng nhập đầy đủ thông tin cơ bản (Tree Type và Root Value)!");
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("Please select a tree type and enter a root value");
+                alert.show();
                 return;
             }
 
             int depthDiff = 0; // Default cho các loại cây không cần
             if ((selectedTreeType.equals("Balanced Tree") || selectedTreeType.equals("Binary Balanced Tree"))
                     && maxDepthDiff.getText().isEmpty()) {
-                System.out.println("Vui lòng nhập giá trị Max Depth Difference cho loại cây Balanced!");
-                return;
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setContentText("Please enter a Max Depth Difference for Balanced Tree");
+                        alert.show();
+                        return;
             } else if (!maxDepthDiff.getText().isEmpty()) {
                 depthDiff = Integer.parseInt(maxDepthDiff.getText());
             }
