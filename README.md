@@ -5,3 +5,7 @@
 #### 20225654	Phan Văn Nghị
 #### 20225895	Nguyễn Đức Nghĩa
 #### 20225655	Nguyễn Kim Ngọc
+
+
+Video bảo vệ project
+https://youtu.be/1_6DmIgDnK8
